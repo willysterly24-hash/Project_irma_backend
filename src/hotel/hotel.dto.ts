@@ -50,6 +50,11 @@ export class CreateHotelDto {
   @IsString({ message: 'La ville doit être une chaîne de caractères' })
   ville: string;
 
+  @ApiProperty({ example: 'Route de la Corniche Ouest', required: false })
+  @IsOptional()
+  @IsString({ message: 'L\'adresse doit être une chaîne de caractères' })
+  adresse?: string;
+
   @ApiProperty({ example: 5 })
   @IsNotEmpty({ message: "Le nombre d'étoiles est obligatoire" })
   @IsNumber({}, { message: 'Les étoiles doivent être un nombre' })
@@ -102,6 +107,11 @@ export class UpdateHotelDto {
   @IsOptional()
   @IsString({ message: 'La ville doit être une chaîne de caractères' })
   ville?: string;
+
+  @ApiProperty({ example: 'Route de la Corniche Ouest', required: false })
+  @IsOptional()
+  @IsString({ message: 'L\'adresse doit être une chaîne de caractères' })
+  adresse?: string;
 
   @ApiProperty({ example: 5, required: false })
   @IsOptional()

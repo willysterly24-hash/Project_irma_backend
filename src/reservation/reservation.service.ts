@@ -41,6 +41,15 @@ export class ReservationService {
     const dateArrivee = new Date(arrivee);
     const dateDepart = new Date(depart);
 
+    const aujourdhui = new Date();
+    aujourdhui.setHours(0, 0, 0, 0);
+
+    if (dateArrivee < aujourdhui) {
+      throw new BadRequestException(
+        'La date d\'arrivée ne peut pas être dans le passé',
+      );
+    }
+
     const diffMs = dateDepart.getTime() - dateArrivee.getTime();
     const nuits = Math.round(diffMs / (1000 * 60 * 60 * 24));
 

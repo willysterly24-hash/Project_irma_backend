@@ -10,10 +10,13 @@ import { ChambreService } from './chambre.service';
 import { CreateChambreDto, UpdateChambreDto } from './chambre.dto';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth, ApiConsumes, ApiBody  } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../user/user.entity';
 
 @ApiTags('Chambres')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('chambre')
 export class ChambreController {
 
@@ -40,14 +43,16 @@ export class ChambreController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Créer une chambre' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Créer une chambre (admin)' })
   create(@Body() dto: CreateChambreDto) {
     return this.chambreService.create(dto);
   }
 
   // POST /chambre/:id/photos — upload multiple (max 4)
   @Post(':id/photos')
-  @ApiOperation({ summary: "Upload photos d'une chambre (jusqu'à 4)" })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: "Upload photos d'une chambre (jusqu'à 4, admin)" })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -86,7 +91,8 @@ export class ChambreController {
 
   // DELETE /chambre/:id/photos — supprime une photo précise
   @Delete(':id/photos')
-  @ApiOperation({ summary: "Supprimer une photo d'une chambre" })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: "Supprimer une photo d'une chambre (admin)" })
   async removePhoto(
     @Param('id', ParseIntPipe) id: number,
     @Body('url') url: string,
@@ -96,13 +102,15 @@ export class ChambreController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Modifier une chambre' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Modifier une chambre (admin)' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateChambreDto) {
     return this.chambreService.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer une chambre' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Supprimer une chambre (admin)' })
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.chambreService.delete(id);
   }

@@ -3,17 +3,21 @@ import { ReservationService } from './reservation.service';
 import { CreateReservationDto, UpdateReservationDto } from './reservation.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../user/user.entity';
 
 @ApiTags('Reservations')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('reservation')
 export class ReservationController {
 
   constructor(private readonly reservationService: ReservationService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Récupérer toutes les réservations' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Récupérer toutes les réservations (admin)' })
   findAll() {
     return this.reservationService.findAll();
   }
@@ -37,13 +41,15 @@ export class ReservationController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Modifier une réservation' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Modifier une réservation (admin)' })
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateReservationDto) {
     return this.reservationService.update(id, dto);
   }
 
   @Patch(':id/confirmer')
-  @ApiOperation({ summary: 'Confirmer une réservation' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Confirmer une réservation (admin)' })
   confirmer(@Param('id', ParseIntPipe) id: number) {
     return this.reservationService.confirmer(id);
   }
@@ -55,7 +61,8 @@ export class ReservationController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer une réservation' })
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Supprimer une réservation (admin)' })
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.reservationService.delete(id);
   }

@@ -12,6 +12,8 @@ import { AvisModule } from './avis/avis.module';
 import { OffreModule } from './offre/offre.module';
 import { MeteoModule } from './meteo/meteo.module';
 import { FavoriModule } from './favori/favori.module';
+import { GeoModule } from './geo/geo.module';
+import { DeviseModule } from './devise/devise.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { FavoriModule } from './favori/favori.module';
     OffreModule,
     MeteoModule,
     FavoriModule,
+    GeoModule,
+    DeviseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

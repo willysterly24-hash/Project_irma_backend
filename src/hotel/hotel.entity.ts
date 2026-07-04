@@ -12,6 +12,9 @@ export class Hotel {
   @Column()
   ville: string;
 
+  @Column({ nullable: true })
+  adresse: string;
+
   @Column()
   etoiles: number;
 

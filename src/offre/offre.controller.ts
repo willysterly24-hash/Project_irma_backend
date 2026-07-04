@@ -1,15 +1,19 @@
 import {
   Controller, Post, Get, Put, Delete,
-  Body, Param, UploadedFile, UseInterceptors
+  Body, Param, UploadedFile, UseInterceptors, UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { OffreService } from './offre.service';
-import { ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger';
 import { Offre } from './offre.entity';
 import { CreateOffreDto } from './create-offre.dto';
 import { UpdateOffreDto } from './update-offre.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../user/user.entity';
 
 @ApiTags('Offres')
 @Controller('offre')
@@ -18,7 +22,10 @@ export class OffreController {
   constructor(private readonly offreService: OffreService) {}
 
   @Post('upload')
-  @ApiOperation({ summary: "Upload image d'une offre" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Upload image d'une offre (admin)" })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -40,7 +47,10 @@ export class OffreController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Créer une offre' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Créer une offre (admin)' })
   create(@Body() body: CreateOffreDto) {
     return this.offreService.create(body);
   }
@@ -52,13 +62,19 @@ export class OffreController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Modifier une offre' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Modifier une offre (admin)' })
   update(@Param('id') id: string, @Body() body: UpdateOffreDto) {
     return this.offreService.update(+id, body);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer une offre' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Supprimer une offre (admin)' })
   delete(@Param('id') id: string) {
     return this.offreService.delete(+id);
   }
